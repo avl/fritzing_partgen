@@ -1,0 +1,4 @@
+*.pyc
+test_*.svg
+test_*.xml
+

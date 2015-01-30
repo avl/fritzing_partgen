@@ -1,0 +1,52 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SO-generator</title>
+</head>
+
+<script src="/jquery.js" type="text/javascript"></script>
+<script src="/jsfunc.js" type="text/javascript"></script>
+
+<body>
+
+<h1>Fritzing part generator</h1>
+<form method="POST"" action="/test.fzpz" autocomplete="off" id="mainpartform">
+<table id="formtable">
+
+<tr>
+<td colspan="1">Part name:</td><td colspan="3">
+<input type="text" value="test" name="partname" onchange="on_part_name_change()" id="partname" />
+</td>
+</tr>
+
+<tr>
+<td colspan="1">Package:</td><td colspan="3">
+<select id="ictype" name="package" onchange="on_ic_change()">
+
+{% for part,desc in parts.get_parts_with_description() %}
+  <option name="package" value="{{part}}">{{desc}}</option>
+{% endfor %}
+</select> 
+</td>
+</tr>
+
+
+
+
+
+</table>
+
+<input type="submit" value="Generate" /><br />
+
+</form>
+<br/>
+<button onclick="onpreview()">Preview</button>
+<br/>
+<div id="imagediv">
+
+</div>
+
+</body>
+
+</html> 

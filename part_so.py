@@ -18,8 +18,8 @@ def gen_pcb(pin_names,**options):
     N=pins
     Nh=N/2
     
-    e=1.27
-    C=5.56
+    e=float(options['pitch'])
+    C=float(options['chipwidth'])
     X1=0.61
     Y1=1.91
     
@@ -195,6 +195,8 @@ function SOIC_add_pins()
 function SOIC_add_thermal_pad_option()
 {
     add_row('Thermal Pad:','<input type="checkbox" name="thermal_pad" onchange="onpreview()" >');        
+    add_row('Pitch:','<input type="text" name="pitch" onchange="onpreview()" value="1.27" > mm');        
+    add_row('Width:','<input type="text" name="chipwidth" onchange="onpreview()" value="5.56" > mm');        
 }
 
 

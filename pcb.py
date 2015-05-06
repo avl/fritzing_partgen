@@ -9,3 +9,13 @@ def hole(x,y,pinnr,ringwidth,diameter,plating=0.035):
                 x=x,y=y,nr=pinnr,ringwidth=ringwidth,radius=radius
                     )
 
+
+def pad(x,y,pinnr,xsize,ysize):
+    return """<rect  fill="rgb(255, 191, 0)" stroke="none" id="connector%(pin)dpin" x="%(x1)f" y="%(y1)f" width="%(width)f" height="%(height)f"/>"""%dict(
+            pin=pinnr,
+            x1=x,
+            y1=y,
+            width=xsize,
+            height=ysize
+        )
+        

@@ -22,6 +22,9 @@ def gen_part_xml(name,pins,modname,pin_names,smd):
     copper0=''
     if not smd:
         copper0='<layer layerId="copper0"/>'
+        
+    for pname in pin_names:
+        print "Pin name:",type(pname),pname
 
     header="""<?xml version='1.0' encoding='UTF-8'?>
     <module fritzingVersion="0.2.2.b.03.04.2550" referenceFile="generic_female_pin_header_4_100mil.fzp" moduleId="%(name)s">
@@ -71,6 +74,7 @@ def gen_part_xml(name,pins,modname,pin_names,smd):
     connectors=[]
     assert len(pin_names)==pins
     for pin,pinname in enumerate(pin_names):
+        pinname=pinname.encode('utf8')
         if smd:
             extra=''
         else:
@@ -158,32 +162,10 @@ def make_part(
     pin_names=[]    
     
     mod=parts[package]
+    print "Calling mod:",mod
     pcb,smd=mod.gen_pcb(pin_names=pin_names,**options)
     
     
-    """   
-    if package=="SOIC":
-        pcb=gen_pcb_so.gen_pcb(pin_names=pin_names,**options)
-        smd=True
-    elif package=="GEN":        
-        pcb=gen_pcb_gen.gen_pcb(int(options['pins']),float(options['holediameter']),float(options['ringwidth']),float(options['pitch']))
-        smd=False
-    elif package=="COBLED":
-        pcb=gen_pcb_cobled.gen_pcb(pin_names=pin_names,**options)
-        smd=False
-    elif package=="EADOG":
-        pin_names=[]
-        pcb=gen_pcb_dogm.gen_pcb(pin_names)        
-        pins=len(pin_names)
-        smd=False
-    elif package=="EMIFIL":
-        pin_names=[]
-        pcb=gen_pcb_emifil.gen_pcb(pin_names)        
-        pins=len(pin_names)
-        smd=False
-    else:
-        raise Exception("Unknown package")
-    """
     
     pins=len(pin_names)
     print "Package:",package,"pins:",pins
@@ -209,6 +191,8 @@ def make_part(
 
     #os.unlink(partfilename)
     partfile=zipfile.ZipFile(partfilename,"w")
+    
+    print "types",type(bread),type(pcb),type(schem),type(icon),type(partxml)
 
     partfile.writestr("svg.breadboard.%s_breadboard.svg"%(modname,),bread)
     partfile.writestr("svg.pcb.%s_pcb.svg"%(modname,),pcb)

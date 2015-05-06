@@ -53,7 +53,6 @@ def gen_pcb(pin_names,**options):
     
     
     copper_start="""
-    <g  id="copper0">
         <g  id="copper1">
 """   
     copper_pads=[]
@@ -97,7 +96,6 @@ def gen_pcb(pin_names,**options):
 
       
     copper_end="""
-        </g>
     </g>
 """
     

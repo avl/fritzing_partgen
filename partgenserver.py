@@ -21,7 +21,9 @@ def jquery():
 
 @app.route("/jsfunc.js")
 def jsfunc():
-    return render_template('jsfunc.js',parts=gen_part)
+    response= make_response(render_template('jsfunc.js',parts=gen_part))
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
 
 
 @app.route(r'/preview.svg',methods=["GET"])
@@ -89,6 +91,6 @@ def get_image(partname):
         raise
         
 if __name__ == '__main__':
-    #app.debug=True
+    app.debug=True
     app.run(host="0.0.0.0",port=8011)
 

@@ -11,7 +11,7 @@ function on_Spark()
     add_row('Height:','  <input type="text" name="height" onchange="onpreview()" value="1" /> mm');        
     add_row('Gap:',' <input type="text" name="gap" onchange="onpreview()" value="0.2" /> mm');
 
- 
+}
 """
 
 def gen_pcb(pin_names,**options):

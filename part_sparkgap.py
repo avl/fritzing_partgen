@@ -10,8 +10,9 @@ function on_Spark()
     add_row('Width:','  <input type="text" name="width" onchange="onpreview()" value="1" /> mm');        
     add_row('Height:','  <input type="text" name="height" onchange="onpreview()" value="1" /> mm');        
     add_row('Gap:',' <input type="text" name="gap" onchange="onpreview()" value="0.2" /> mm');
-}
-"""    
+
+ 
+"""
 
 def gen_pcb(pin_names,**options):
     width=float(options['width'])
@@ -21,8 +22,9 @@ def gen_pcb(pin_names,**options):
     pin_names.append("sig");
     pin_names.append("GND");
        
-    overall_x=width
-    overall_y=height
+    border=min(0.75+min(width,height)*0.1,min(width,height)*0.25)
+    overall_x=width+border*2
+    overall_y=height+border*2
             
            
     header="""<?xml version='1.0' encoding='UTF-8'?>
@@ -43,9 +45,15 @@ def gen_pcb(pin_names,**options):
             (0,0)
     ]
     
+    silk_t=0.5
     silkscreen=("""
-    <g  id="silkscreen">
+    <g id="silkscreen">
     """)               
+    for a,b in zip(silk_points,silk_points[1:]):
+        silkscreen+="""<line fill="none" stroke="white" stroke-width="%f" x1="%f" y1="%f" x2="%f" y2="%f"/>"""%(
+            silk_t,a[0],a[1],b[0],b[1])
+        silkscreen+="\n"
+    
     silkscreen+=("""
     </g>    
     """)
@@ -63,34 +71,34 @@ def gen_pcb(pin_names,**options):
 #       <rect  fill="rgb(255, 191, 0)" stroke="none" id="connector%(pin)dpin" x="%(x1)f" y="%(y1)f" width="%(w)f" height="%(h)f"/>   
     copper_pads.append("""
       <path fill="rgb(255, 191, 0)" stroke="none" id="connector%(pin)dpin" 
-        d="M%(x1)f %(y1)f L%(w)f %(y1)f L%(w)f %(h)f L%(a3)f %(h)f L%(a2)f %(hgap)f L%(a1)f %(h)f L0 %(h)f Z" />
+        d="M%(x1)f %(y1)f L%(w)f %(y1)f L%(w)f %(h)f L%(a3)f %(h)f L%(a2)f %(hgap)f L%(a1)f %(h)f L%(x1)f %(h)f Z" />
    
 """%dict(
-        x1=0,
-        y1=0,
-        w=width,
-        h=height/2.0-gap,
+        x1=border,
+        y1=border,
+        w=width+border,
+        h=height/2.0-gap+border,
         pin=0,
-        a3=width/2.0+gap,
-        a2=width/2.0,
-        a1=width/2.0-gap,
-        hgap=height/2.0-gap/2.0
+        a3=width/2.0+gap+border,
+        a2=width/2.0+border,
+        a1=width/2.0-gap+border,
+        hgap=height/2.0-gap/2.0+border
     ))
 
     copper_pads.append("""
    
       <path fill="rgb(255, 191, 0)" stroke="none" id="connector%(pin)dpin" 
-        d="M%(x1)f %(y2)f L%(x2)f %(y2)f L%(x2)f %(y1)f L%(a3)f %(y1)f L%(a2)f %(hgap)f L%(a1)f %(y1)f L0 %(y1)f Z" />
+        d="M%(x1)f %(y2)f L%(x2)f %(y2)f L%(x2)f %(y1)f L%(a3)f %(y1)f L%(a2)f %(hgap)f L%(a1)f %(y1)f L%(x1)f %(y1)f Z" />
    
 """%dict(
-        x1=0,
-        y1=height/2.0+gap,
-        x2=width,
-        y2=height,
-        a3=width/2.0+gap,
-        a2=width/2.0,
-        a1=width/2.0-gap,
-        hgap=height/2.0+gap/2.0,
+        x1=0+border,
+        y1=height/2.0+gap+border,
+        x2=width+border,
+        y2=height+border,
+        a3=width/2.0+gap+border,
+        a2=width/2.0+border,
+        a1=width/2.0-gap+border,
+        hgap=height/2.0+gap/2.0+border,
         pin=1,
     ))
 
@@ -103,7 +111,7 @@ def gen_pcb(pin_names,**options):
 </svg>
 """    
     out=header+silkscreen+copper_start+"\n".join(copper_pads)+copper_end+footer
-    return out,False
+    return out,True
     
     
     
